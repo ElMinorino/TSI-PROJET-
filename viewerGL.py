@@ -19,8 +19,11 @@ class ViewerGL:
         # création et paramétrage de la fenêtre
         glfw.window_hint(glfw.RESIZABLE, False)
         self.window = glfw.create_window(800, 800, 'OpenGL', None, None)
+
+        glfw.set_input_mode(self.window,glfw.CURSOR,glfw.CURSOR_DISABLED)
         # paramétrage de la fonction de gestion des évènements
         glfw.set_key_callback(self.window, self.key_callback)
+        glfw.set_cursor_pos_callback(self.window,self.cursor_position_callback)
         # activation du context OpenGL pour la fenêtre
         glfw.make_context_current(self.window)
         glfw.swap_interval(1)
@@ -32,16 +35,22 @@ class ViewerGL:
 
         self.objs = []
         self.touch = {}
+        self.mouse_x= None
+        self.mouse_y = None
+
+    # def new_target(self):
+    #     self.objs[5+self.i]
 
     def run(self):
         # boucle d'affichage
+        self.first_update()
         while not glfw.window_should_close(self.window):
             # nettoyage de la fenêtre : fond et profondeur
             GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 
             if glfw.get_time() > 2 :
-                self.objs[2].visible = False
-                self.objs[3].visible = False
+                self.objs[12].visible = False
+                self.objs[13].visible = False
 
             self.update_key()
 
@@ -61,7 +70,20 @@ class ViewerGL:
         if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
             glfw.set_window_should_close(win, glfw.TRUE)
         self.touch[key] = action
-    
+        
+    def cursor_position_callback(self, win, xpos, ypos):
+        print(f"xpos: {xpos} ypos: {ypos}")
+        if self.mouse_x != None and self.mouse_y != None:
+            #self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] += (xpos-self.mouse_x) *0.01
+            #self.first_update()
+            self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += (ypos-self.mouse_y)*0.01/2
+            self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += (xpos-self.mouse_x) *0.01/2
+        
+        self.mouse_x = xpos 
+        self.mouse_y= ypos
+
+
+
     def add_object(self, obj):
         self.objs.append(obj)
 
@@ -100,19 +122,18 @@ class ViewerGL:
         GL.glUniformMatrix4fv(loc, 1, GL.GL_FALSE, self.cam.projection)
 
     def update_key(self):
-       # if glfw.KEY_UP in self.touch and self.touch[glfw.KEY_UP] > 0:
-       #     self.objs[0].transformation.translation += \
-       #         pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[0].transformation.rotation_euler), pyrr.Vector3([0, 0, 0.02]))
-      #  if glfw.KEY_DOWN in self.touch and self.touch[glfw.KEY_DOWN] > 0:
-       #     self.objs[0].transformation.translation -= \
-        #        pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[0].transformation.rotation_euler), pyrr.Vector3([0, 0, 0.02]))
-        if glfw.KEY_LEFT in self.touch and self.touch[glfw.KEY_LEFT] > 0:
-            self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] -= 0.1
-        if glfw.KEY_RIGHT in self.touch and self.touch[glfw.KEY_RIGHT] > 0:
-            self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] += 0.1
+        # if glfw.KEY_UP in self.touch and self.touch[glfw.KEY_UP] > 0:
+        #     self.cam.transformation.rotation_euler[pyrr.euler.index().roll] -= 0.1
+        # if glfw.KEY_DOWN in self.touch and self.touch[glfw.KEY_DOWN] > 0:
+        #     self.objs[0].transformation.translation -= \
+        #     pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[0].transformation.rotation_euler), pyrr.Vector3([0, 0, 0.02]))
+        # if glfw.KEY_LEFT in self.touch and self.touch[glfw.KEY_LEFT] > 0:
+        #     self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] -= 0.1
+        # if glfw.KEY_RIGHT in self.touch and self.touch[glfw.KEY_RIGHT] > 0:
+        #     self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] += 0.1
 
-        if glfw.KEY_I in self.touch and self.touch[glfw.KEY_I] > 0:
-            self.cam.transformation.rotation_euler[pyrr.euler.index().roll] -= 0.1
+        #if glfw.KEY_I in self.touch and self.touch[glfw.KEY_I] > 0:
+
         if glfw.KEY_K in self.touch and self.touch[glfw.KEY_K] > 0:
             self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += 0.1
         if glfw.KEY_J in self.touch and self.touch[glfw.KEY_J] > 0:
@@ -120,9 +141,9 @@ class ViewerGL:
         if glfw.KEY_L in self.touch and self.touch[glfw.KEY_L] > 0:
             self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += 0.1
 
-        # if glfw.KEY_SPACE in self.touch and self.touch[glfw.KEY_SPACE] > 0:
+
+    def first_update(self):
         self.cam.transformation.rotation_euler = self.objs[0].transformation.rotation_euler.copy() 
         self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += np.pi
         self.cam.transformation.rotation_center = self.objs[0].transformation.translation + self.objs[0].transformation.rotation_center
         self.cam.transformation.translation = self.objs[0].transformation.translation + pyrr.Vector3([0, 1, 5])
-
