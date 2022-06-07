@@ -6,9 +6,12 @@ import numpy as np
 import OpenGL.GL as GL
 import pyrr
 import time
+import random
 
 
 def main():
+    
+    All_destroyed 
     viewer = ViewerGL()
 
     viewer.set_camera(Camera())
@@ -23,11 +26,24 @@ def main():
     m.apply_matrix(pyrr.matrix44.create_from_scale([2, 2, 2, 1]))
     tr = Transformation3D()
     tr.translation.y = -np.amin(m.vertices, axis=0)[1]
-    tr.translation.z = -5
+    tr.translation.z = -10
     tr.rotation_center.z = 0.2
     texture = glutils.load_texture('stegosaurus.jpg')
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
     viewer.add_object(o)
+
+    for i in range (10):
+        m = Mesh.load_obj('cube.obj')
+        m.normalize()
+        m.apply_matrix(pyrr.matrix44.create_from_scale([0.5, 0.55, 0.5, 1]))
+        tr = Transformation3D()
+        tr.translation.x = -25 +5*i
+        tr.translation.y = 2.50+ 0.5*i*(-1)**i
+        texture = glutils.load_texture('wall.jpg')
+        o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
+        viewer.add_object(o)
+
+
 
     m = Mesh()
     p0, p1, p2, p3 = [-25, 0, -25], [25, 0, -25], [25, 0, 25], [-25, 0, 25]
@@ -48,19 +64,9 @@ def main():
     viewer.add_object(o)
     o= Text("x", np.array([ -0.05, 0.15], np.float32), np.array([0.05,0.05],np.float32), vao, 2, programGUI_id, texture)
     viewer.add_object(o)
-
-    m = Mesh.load_obj('cube.obj')
-    m.normalize()
-    m.apply_matrix(pyrr.matrix44.create_from_scale([0.5, 0.5, 0.5, 1]))
-    tr = Transformation3D()
-    tr.translation.y = 5
-    texture = glutils.load_texture('wall.jpg')
-    o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
-    viewer.add_object(o)
     viewer.run()
-
-
-
+ 
+    
 
 
 if __name__ == '__main__':
