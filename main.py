@@ -56,7 +56,8 @@ def main():
         tr = Transformation3D()
         tr.translation.z = ListeBriques[i][0]
         tr.translation.x =ListeBriques[i][1]
-        tr.translation.y = (random.random())*5 +1
+        tr.translation.y = (random.random())*5+0.5
+        
         texture = glutils.load_texture('wall.jpg')
         o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
         viewer.add_object(o)

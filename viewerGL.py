@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from enum import auto
 import OpenGL.GL as GL
 import glfw
 import pyrr
@@ -19,7 +20,7 @@ class ViewerGL:
         glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
         # création et paramétrage de la fenêtre
         glfw.window_hint(glfw.RESIZABLE, False)
-        self.window = glfw.create_window(800, 800, 'OpenGL', None, None)
+        self.window = glfw.create_window(1200, 1200, 'OpenGL', None, None)
 
         glfw.set_input_mode(self.window,glfw.CURSOR,glfw.CURSOR_DISABLED)
         # paramétrage de la fonction de gestion des évènements
@@ -82,16 +83,20 @@ class ViewerGL:
             self.objs[3+self.BriqueVisible].visible = True
         
     def cursor_position_callback(self, win, xpos, ypos):
-        # print(f"xpos: {xpos} ypos: {ypos}")
-        if self.mouse_x != None and self.mouse_y != None:
-            #self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] += (xpos-self.mouse_x) *0.01
-            #self.first_update()
-            self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += (ypos-self.mouse_y)*0.01/2
-            self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += (xpos-self.mouse_x) *0.01/2
-        
-        self.mouse_x = xpos 
-        self.mouse_y= ypos
 
+        if self.mouse_x != None and self.mouse_y != None:
+
+            self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += (xpos-self.mouse_x) *0.01/2
+            
+            if self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y)*0.01/2>=-0.4 and ypos-self.mouse_y <0:
+                self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += (ypos-self.mouse_y)*0.01/2
+                
+            if self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y)*0.01/2<=1 and ypos-self.mouse_y >0:
+                self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += (ypos-self.mouse_y)*0.01/2               
+        
+        self.mouse_x = xpos
+        self.mouse_y = ypos
+        print(self.cam.transformation.rotation_euler[pyrr.euler.index().roll],ypos-self.mouse_y),
 
 
     def add_object(self, obj):
