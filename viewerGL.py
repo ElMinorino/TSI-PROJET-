@@ -59,8 +59,8 @@ class ViewerGL:
                 obj.draw()
 
             if(self.bool):
-                for i in range(40):
-                    self.objs[15].transformation.translation.z += 0.1
+                for i in range(20):
+                    self.objs[6].transformation.translation.z += 0.1
                 self.bool=0
 
             # changement de buffer d'affichage pour éviter un effet de scintillement
@@ -87,7 +87,7 @@ class ViewerGL:
             self.BriqueVisible +=1
             self.objs[3+self.BriqueVisible].visible = True
         
-        if glfw.KEY_SPACE in self.touch and self.touch[glfw.KEY_SPACE] > 0:
+        if glfw.KEY_S in self.touch and self.touch[glfw.KEY_S] > 0:
             self.bool=1
 
     def cursor_position_callback(self, win, xpos, ypos):
