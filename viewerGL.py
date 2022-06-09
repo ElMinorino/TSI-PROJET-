@@ -8,6 +8,7 @@ import numpy as np
 from cpe3d import Object3D
 
 class ViewerGL:
+    BriqueVisible=0
     def __init__(self):
         # initialisation de la librairie GLFW
         glfw.init()
@@ -47,12 +48,8 @@ class ViewerGL:
         while not glfw.window_should_close(self.window):
             # nettoyage de la fenêtre : fond et profondeur
             GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-
-            if glfw.get_time() > 2 :
-                self.objs[12].visible = False
-                self.objs[13].visible = False
-
-            self.update_key()
+            
+         #  self.update_key()
 
             for obj in self.objs:
                 GL.glUseProgram(obj.program)
@@ -71,8 +68,21 @@ class ViewerGL:
             glfw.set_window_should_close(win, glfw.TRUE)
         self.touch[key] = action
         
+        if key == glfw.KEY_ENTER and action == glfw.PRESS : 
+            self.objs[1].visible = False
+            self.objs[2].visible = False
+            for i in range(18):
+                self.objs[4+i].visible = False 
+                
+        
+        if key== glfw.KEY_SPACE and action == glfw.PRESS :
+            
+            self.objs[3+self.BriqueVisible].visible = False
+            self.BriqueVisible +=1
+            self.objs[3+self.BriqueVisible].visible = True
+        
     def cursor_position_callback(self, win, xpos, ypos):
-        print(f"xpos: {xpos} ypos: {ypos}")
+        # print(f"xpos: {xpos} ypos: {ypos}")
         if self.mouse_x != None and self.mouse_y != None:
             #self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] += (xpos-self.mouse_x) *0.01
             #self.first_update()
@@ -121,7 +131,7 @@ class ViewerGL:
             print("Pas de variable uniforme : projection")
         GL.glUniformMatrix4fv(loc, 1, GL.GL_FALSE, self.cam.projection)
 
-    def update_key(self):
+   # def update_key(self):
         # if glfw.KEY_UP in self.touch and self.touch[glfw.KEY_UP] > 0:
         #     self.cam.transformation.rotation_euler[pyrr.euler.index().roll] -= 0.1
         # if glfw.KEY_DOWN in self.touch and self.touch[glfw.KEY_DOWN] > 0:
@@ -132,15 +142,10 @@ class ViewerGL:
         # if glfw.KEY_RIGHT in self.touch and self.touch[glfw.KEY_RIGHT] > 0:
         #     self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] += 0.1
 
-        #if glfw.KEY_I in self.touch and self.touch[glfw.KEY_I] > 0:
 
-        if glfw.KEY_K in self.touch and self.touch[glfw.KEY_K] > 0:
-            self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += 0.1
-        if glfw.KEY_J in self.touch and self.touch[glfw.KEY_J] > 0:
-            self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] -= 0.1
-        if glfw.KEY_L in self.touch and self.touch[glfw.KEY_L] > 0:
-            self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += 0.1
 
+        
+                
 
     def first_update(self):
         self.cam.transformation.rotation_euler = self.objs[0].transformation.rotation_euler.copy() 
