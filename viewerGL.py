@@ -36,6 +36,7 @@ class ViewerGL:
 
         self.objs = []
         self.touch = {}
+        self.bool = 0
         self.mouse_x= None
         self.mouse_y = None
 
@@ -56,6 +57,11 @@ class ViewerGL:
                 if isinstance(obj, Object3D):
                     self.update_camera(obj.program)
                 obj.draw()
+
+            if(self.bool):
+                for i in range(40):
+                    self.objs[15].transformation.translation.z += 0.1
+                self.bool=0
 
             # changement de buffer d'affichage pour éviter un effet de scintillement
             glfw.swap_buffers(self.window)
@@ -81,6 +87,9 @@ class ViewerGL:
             self.BriqueVisible +=1
             self.objs[3+self.BriqueVisible].visible = True
         
+        if glfw.KEY_SPACE in self.touch and self.touch[glfw.KEY_SPACE] > 0:
+            self.bool=1
+
     def cursor_position_callback(self, win, xpos, ypos):
         # print(f"xpos: {xpos} ypos: {ypos}")
         if self.mouse_x != None and self.mouse_y != None:
