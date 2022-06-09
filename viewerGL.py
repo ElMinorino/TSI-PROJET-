@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from enum import auto
+from tkinter import Button
 import OpenGL.GL as GL
 import glfw
 import pyrr
@@ -25,6 +26,7 @@ class ViewerGL:
         glfw.set_input_mode(self.window,glfw.CURSOR,glfw.CURSOR_DISABLED)
         # paramétrage de la fonction de gestion des évènements
         glfw.set_key_callback(self.window, self.key_callback)
+        glfw.set_mouse_button_callback(self.window, self.mouse_button_callback)
         glfw.set_cursor_pos_callback(self.window,self.cursor_position_callback)
         # activation du context OpenGL pour la fenêtre
         glfw.make_context_current(self.window)
@@ -59,9 +61,15 @@ class ViewerGL:
                     self.update_camera(obj.program)
                 obj.draw()
 
-            if(self.bool):
-                for i in range(20):
-                    self.objs[6].transformation.translation.z += 0.1
+            # if(self.bool):
+            #     for i in range(18):
+            #         A=glfw.get_time()
+            #         print(glfw.get_time()-A)
+            #         while glfw.get_time()-A<0.1:
+            #           pass
+            #         self.objs[24].transformation.translation.z +=0.5
+                    
+                    
                 self.bool=0
 
             # changement de buffer d'affichage pour éviter un effet de scintillement
@@ -81,16 +89,22 @@ class ViewerGL:
             for i in range(18):
                 self.objs[4+i].visible = False 
                 
-        
-        if key== glfw.KEY_SPACE and action == glfw.PRESS :
-            
+
+    
+        if key == glfw.KEY_S and action == glfw.PRESS:
+            self.bool=1
+
+    def mouse_button_callback(self,win,button, action,mods):          
+        if button == glfw.MOUSE_BUTTON_LEFT and action == glfw.PRESS :
+
+            if self.BriqueVisible == 18:
+                self.objs[3+self.BriqueVisible].visible = False
+                self.BriqueVisible = 0  
             self.objs[3+self.BriqueVisible].visible = False
             self.BriqueVisible +=1
             self.objs[3+self.BriqueVisible].visible = True
-        
-        if glfw.KEY_S in self.touch and self.touch[glfw.KEY_S] > 0:
-            self.bool=1
-
+    
+    
     def cursor_position_callback(self, win, xpos, ypos):
 
         if self.mouse_x != None and self.mouse_y != None:
@@ -105,8 +119,6 @@ class ViewerGL:
         
         self.mouse_x = xpos
         self.mouse_y = ypos
-        print(self.cam.transformation.rotation_euler[pyrr.euler.index().roll],ypos-self.mouse_y),
-
 
     def add_object(self, obj):
         self.objs.append(obj)
