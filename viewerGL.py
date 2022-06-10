@@ -61,13 +61,10 @@ class ViewerGL:
                     self.update_camera(obj.program)
                 obj.draw()
 
-            # if(self.bool):
-            #     for i in range(18):
-            #         A=glfw.get_time()
-            #         print(glfw.get_time()-A)
-            #         while glfw.get_time()-A<0.1:
-            #           pass
-            #         self.objs[24].transformation.translation.z +=0.5
+            if(self.bool):
+                for i in range(18):
+                   self.objs[25].transformation.translation -= \
+                   pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[25].transformation.rotation_euler), pyrr.Vector3([10, 0, 0.02]))
                     
                     
                 self.bool=0
@@ -89,8 +86,6 @@ class ViewerGL:
             for i in range(18):
                 self.objs[4+i].visible = False 
                 
-
-    
         if key == glfw.KEY_S and action == glfw.PRESS:
             self.bool=1
 
@@ -161,8 +156,8 @@ class ViewerGL:
         # if glfw.KEY_UP in self.touch and self.touch[glfw.KEY_UP] > 0:
         #     self.cam.transformation.rotation_euler[pyrr.euler.index().roll] -= 0.1
         # if glfw.KEY_DOWN in self.touch and self.touch[glfw.KEY_DOWN] > 0:
-        #     self.objs[0].transformation.translation -= \
-        #     pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[0].transformation.rotation_euler), pyrr.Vector3([0, 0, 0.02]))
+        #  AAAAAA   self.objs[0].transformation.translation -= \
+        # AAAAAAAAA    pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[0].transformation.rotation_euler), pyrr.Vector3([0, 0, 0.02]))
         # if glfw.KEY_LEFT in self.touch and self.touch[glfw.KEY_LEFT] > 0:
         #     self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] -= 0.1
         # if glfw.KEY_RIGHT in self.touch and self.touch[glfw.KEY_RIGHT] > 0:
