@@ -83,7 +83,7 @@ class ViewerGL:
         if key == glfw.KEY_ENTER and action == glfw.PRESS : 
             self.objs[1].visible = False
             self.objs[2].visible = False
-            for i in range(18):
+            for i in range(19):
                 self.objs[4+i].visible = False 
                 
         if key == glfw.KEY_S and action == glfw.PRESS:
@@ -92,7 +92,7 @@ class ViewerGL:
     def mouse_button_callback(self,win,button, action,mods):          
         if button == glfw.MOUSE_BUTTON_LEFT and action == glfw.PRESS :
 
-            if self.BriqueVisible == 18:
+            if self.BriqueVisible == 19:
                 self.objs[3+self.BriqueVisible].visible = False
                 self.BriqueVisible = 0  
             self.objs[3+self.BriqueVisible].visible = False
@@ -105,6 +105,7 @@ class ViewerGL:
         if self.mouse_x != None and self.mouse_y != None:
 
             self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += (xpos-self.mouse_x) *0.01/2
+            self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] +=  (xpos-self.mouse_x) *0.01/2 
             
             if self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y)*0.01/2>=-0.4 and ypos-self.mouse_y <0:
                 self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += (ypos-self.mouse_y)*0.01/2
@@ -153,7 +154,7 @@ class ViewerGL:
         GL.glUniformMatrix4fv(loc, 1, GL.GL_FALSE, self.cam.projection)
 
    # def update_key(self):
-        # if glfw.KEY_UP in self.touch and self.touch[glfw.KEY_UP] > 0:
+      #    if glfw.KEY_UP in self.touch and self.touch[glfw.KEY_UP] > 0:
         #     self.cam.transformation.rotation_euler[pyrr.euler.index().roll] -= 0.1
         # if glfw.KEY_DOWN in self.touch and self.touch[glfw.KEY_DOWN] > 0:
         #  AAAAAA   self.objs[0].transformation.translation -= \
