@@ -43,8 +43,7 @@ class ViewerGL:
         self.mouse_x= None
         self.mouse_y = None
 
-    # def new_target(self):
-    #     self.objs[5+self.i]
+
 
     def run(self):
         # boucle d'affichage
@@ -53,7 +52,6 @@ class ViewerGL:
             # nettoyage de la fenêtre : fond et profondeur
             GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
             
-         #  self.update_key()
 
             for obj in self.objs:
                 GL.glUseProgram(obj.program)
@@ -62,12 +60,11 @@ class ViewerGL:
                 obj.draw()
 
             if(self.bool):
-                for i in range(18):
-                   self.objs[25].transformation.translation -= \
-                   pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[25].transformation.rotation_euler), pyrr.Vector3([10, 0, 0.02]))
-                    
-                    
-                self.bool=0
+                self.objs[25].transformation.translation -= \
+                    pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[25].transformation.rotation_euler), pyrr.Vector3([1, -1,-1]))
+                
+                
+            self.bool=0
 
             # changement de buffer d'affichage pour éviter un effet de scintillement
             glfw.swap_buffers(self.window)
@@ -79,6 +76,7 @@ class ViewerGL:
         if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
             glfw.set_window_should_close(win, glfw.TRUE)
         self.touch[key] = action
+        
         
         if key == glfw.KEY_ENTER and action == glfw.PRESS : 
             self.objs[1].visible = False
@@ -101,7 +99,6 @@ class ViewerGL:
     
     
     def cursor_position_callback(self, win, xpos, ypos):
-
         if self.mouse_x != None and self.mouse_y != None:
 
             self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += (xpos-self.mouse_x) *0.01/2
@@ -163,11 +160,7 @@ class ViewerGL:
         #     self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] -= 0.1
         # if glfw.KEY_RIGHT in self.touch and self.touch[glfw.KEY_RIGHT] > 0:
         #     self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] += 0.1
-
-
-
-        
-                
+  
 
     def first_update(self):
         self.cam.transformation.rotation_euler = self.objs[0].transformation.rotation_euler.copy() 
