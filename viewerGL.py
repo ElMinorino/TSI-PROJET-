@@ -154,7 +154,7 @@ class ViewerGL:
         GL.glUniformMatrix4fv(loc, 1, GL.GL_FALSE, self.cam.projection)
 
    # def update_key(self):
-        # if glfw.KEY_UP in self.touch and self.touch[glfw.KEY_UP] > 0:
+      #    if glfw.KEY_UP in self.touch and self.touch[glfw.KEY_UP] > 0:
         #     self.cam.transformation.rotation_euler[pyrr.euler.index().roll] -= 0.1
         # if glfw.KEY_DOWN in self.touch and self.touch[glfw.KEY_DOWN] > 0:
         #     self.objs[0].transformation.translation -= \
