@@ -40,13 +40,17 @@ def main():
     o = Text(text2, np.array([-0.5, -0.2], np.float32), np.array([0.5, 0.3], np.float32), vao, 2, programGUI_id, texture)
     viewer.add_object(o)
     
-    ListeXDec= [i for i in np.arange(-7.5,7.6,0.1)]
-    ListeZDec= [i for i in np.arange(-17,-2,0.1)]
+    ListeXDec= [i for i in np.arange(-12.1,12,0.1)]
+
+    ListeZDec= [i for i in np.arange(-21.5,2.5,0.1)]
+
     ListeBriques =[]
     for nbx in ListeXDec:
         for nbz in ListeZDec:
-            if abs((nbx)**2+(nbz+9.5)**2-7.5**2 )<0.0001 :
+            if abs((nbx)**2+(nbz+9.5)**2-10**2 )<0.0001 :
                 ListeBriques.append((nbz,nbx))
+
+    
     random.shuffle(ListeBriques)
                 
     for i in range (len(ListeBriques)):
