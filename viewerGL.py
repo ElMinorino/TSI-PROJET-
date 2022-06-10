@@ -61,13 +61,9 @@ class ViewerGL:
                     self.update_camera(obj.program)
                 obj.draw()
 
-            # if(self.bool):
-            #     for i in range(18):
-            #         A=glfw.get_time()
-            #         print(glfw.get_time()-A)
-            #         while glfw.get_time()-A<0.1:
-            #           pass
-            #         self.objs[24].transformation.translation.z +=0.5
+            if(self.bool):
+                for i in range(18):
+                    self.objs[24].transformation.translation.z +=0.5
                     
                     
                 self.bool=0
