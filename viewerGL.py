@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+from math import sqrt
 from enum import auto
 from tkinter import Button
 import OpenGL.GL as GL
 import glfw
+from pkg_resources import compatible_platforms
 import pyrr
 import math
 import numpy as np
@@ -42,6 +44,7 @@ class ViewerGL:
         self.bool = 0
         self.mouse_x= None
         self.mouse_y = None
+        self.cible = 0.05
 
     # def new_target(self):
     #     self.objs[5+self.i]
@@ -60,14 +63,14 @@ class ViewerGL:
                 if isinstance(obj, Object3D):
                     self.update_camera(obj.program)
                 obj.draw()
-
+            
             if(self.bool):
-                for i in range(18):
-                   self.objs[25].transformation.translation -= \
-                   pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[25].transformation.rotation_euler), pyrr.Vector3([10, 0, 0.02]))
-                    
-                    
-                self.bool=0
+                self.objs[25].transformation.translation -= \
+                    pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[25].transformation.rotation_euler), pyrr.Vector3([0, 0, -1]))      
+            self.bool=0
+
+            if sqrt(pow(self.objs[25].transformation.rotation_euler[0] - self.objs[26].transformation.translation[0], 2) + pow(self.objs[25].transformation.rotation_euler[1] - self.objs[26].transformation.translation[1], 2) + pow(self.objs[25].transformation.rotation_euler[2] - self.objs[26].transformation.translation[2], 2)) < self.cible:
+                self.objs[26].visible = False
 
             # changement de buffer d'affichage pour éviter un effet de scintillement
             glfw.swap_buffers(self.window)
@@ -115,6 +118,8 @@ class ViewerGL:
         
         self.mouse_x = xpos
         self.mouse_y = ypos
+
+   
 
     def add_object(self, obj):
         self.objs.append(obj)

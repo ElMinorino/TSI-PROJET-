@@ -91,6 +91,17 @@ def main():
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
     viewer.add_object(o)
 
+    m = Mesh.load_obj('cube.obj')
+    m.normalize()
+    m.apply_matrix(pyrr.matrix44.create_from_scale([0.4, 0.4, 0.4, 1]))
+    tr = Transformation3D()
+    tr.translation.x = 0
+    tr.translation.y = 2
+    tr.translation.z = 0
+    texture = glutils.load_texture('wall.jpg')
+    o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
+    viewer.add_object(o)
+
     viewer.run()
     
  
