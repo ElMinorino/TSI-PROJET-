@@ -44,7 +44,7 @@ class ViewerGL:
         self.bool = 0
         self.mouse_x= None
         self.mouse_y = None
-        self.cible = 0.05
+        self.cible = 2
 
 
 
