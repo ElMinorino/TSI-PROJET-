@@ -46,8 +46,7 @@ class ViewerGL:
         self.mouse_y = None
         self.cible = 0.05
 
-    # def new_target(self):
-    #     self.objs[5+self.i]
+
 
     def run(self):
         # boucle d'affichage
@@ -56,7 +55,6 @@ class ViewerGL:
             # nettoyage de la fenêtre : fond et profondeur
             GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
             
-         #  self.update_key()
 
             for obj in self.objs:
                 GL.glUseProgram(obj.program)
@@ -83,6 +81,7 @@ class ViewerGL:
             glfw.set_window_should_close(win, glfw.TRUE)
         self.touch[key] = action
         
+        
         if key == glfw.KEY_ENTER and action == glfw.PRESS : 
             self.objs[1].visible = False
             self.objs[2].visible = False
@@ -104,7 +103,6 @@ class ViewerGL:
     
     
     def cursor_position_callback(self, win, xpos, ypos):
-
         if self.mouse_x != None and self.mouse_y != None:
 
             self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += (xpos-self.mouse_x) *0.01/2
@@ -168,11 +166,7 @@ class ViewerGL:
         #     self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] -= 0.1
         # if glfw.KEY_RIGHT in self.touch and self.touch[glfw.KEY_RIGHT] > 0:
         #     self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] += 0.1
-
-
-
-        
-                
+  
 
     def first_update(self):
         self.cam.transformation.rotation_euler = self.objs[0].transformation.rotation_euler.copy() 
