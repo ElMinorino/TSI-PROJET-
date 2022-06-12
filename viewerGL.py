@@ -128,6 +128,9 @@ class ViewerGL:
                 self.objs[1+self.BriqueVisible].visible = True
                 self.cible_actuelle=self.objs[1+self.BriqueVisible]
            
+           
+           
+           
     
     def cursor_position_callback(self, win, xpos, ypos):
         if self.debut:
