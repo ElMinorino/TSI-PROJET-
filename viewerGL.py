@@ -44,7 +44,7 @@ class ViewerGL:
         self.bool = 0
         self.mouse_x= None
         self.mouse_y = None
-        self.cible = 2
+        self.cible = 5
 
 
 
@@ -67,7 +67,7 @@ class ViewerGL:
                     pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[25].transformation.rotation_euler), pyrr.Vector3([0, 0, -1]))      
             self.bool=0
 
-            if sqrt(pow(self.objs[25].transformation.rotation_euler[0] - self.objs[26].transformation.translation[0], 2) + pow(self.objs[25].transformation.rotation_euler[1] - self.objs[26].transformation.translation[1], 2) + pow(self.objs[25].transformation.rotation_euler[2] - self.objs[26].transformation.translation[2], 2)) < self.cible:
+            if sqrt(pow(self.objs[25].transformation.rotation_euler[0] - self.objs[26].transformation.translation[0], 2) + pow(self.objs[25].transformation.rotation_euler[1] - self.objs[26].transformation.translation[1], 2) + pow(self.objs[25].transformation.rotation_euler[2] - self.objs[26].transformation.translation[2], 2)) <= self.cible:
                 self.objs[26].visible = False
 
             # changement de buffer d'affichage pour éviter un effet de scintillement
