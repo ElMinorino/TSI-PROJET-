@@ -40,7 +40,7 @@ def main():
         tr = Transformation3D()
         tr.translation.z = ListeBriques[i][2]
         tr.translation.x =ListeBriques[i][0]
-        tr.translation.y = 0 # ListeBriques[i][1]
+        tr.translation.y = ListeBriques[i][1]
         
         texture = glutils.load_texture('bloc.jpg')
         o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
