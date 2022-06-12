@@ -105,15 +105,15 @@ class ViewerGL:
             self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0]
             self.coordZCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[2]
             if self.coordXCible <0 and self.coordZCible >-9.5:
-                ajout= 0   
-            elif self.coordXCible <0  and self.coordZCible <-9.5:
-                ajout= np.pi/2
-            elif self.coordXCible > 0 and self.coordXCible <13.1 and self.coordZCible >-22.1 and self.coordZCible <-9.5:
-                ajout = np.pi
+                ajout= 0
+                self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12)))   
+            elif self.coordZCible <-9.5:
+                ajout= np.pi
+                self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12)))
             else:
                 ajout = 3*np.pi/2
-                
-            self.coordXCible= 200*(ajout+np.arccos(self.coordXCible/12))
+                self.coordXCible= abs(200*(ajout+np.arccos(self.coordXCible/12)))
+            
 
             print(self.coordXProj,self.coordXCible)  
             if self.coordXProj == self.coordXCible:
@@ -135,7 +135,7 @@ class ViewerGL:
     
     def cursor_position_callback(self, win, xpos, ypos):
         if self.debut:
-            self.modif= xpos-628
+            self.modif= xpos
             self.debut=False
         xmod=(xpos-self.modif) % 1256
         
