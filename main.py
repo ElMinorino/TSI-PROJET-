@@ -3,7 +3,7 @@ import glutils
 from mesh import Mesh
 from cpe3d import Object3D, Camera, Transformation3D, Text
 import numpy as np
-import OpenGL.GL as GL
+import OpenGL.GL as GL 
 import pyrr
 import time
 import random
@@ -25,33 +25,31 @@ def main():
     m.apply_matrix(pyrr.matrix44.create_from_scale([2, 2, 2, 1]))
     tr = Transformation3D()
     tr.translation.y = -np.amin(m.vertices, axis=0)[1]
-    tr.translation.z = -10
+    tr.translation.z = -9.5
     tr.rotation_center.z = 0.2
     texture = glutils.load_texture('stegosaurus.jpg')
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
     viewer.add_object(o)
-    
-    ListeXDec= [i for i in np.arange(-12.1,12,0.1)]
 
-    ListeZDec= [i for i in np.arange(-21.5,2.5,0.1)]
-
-    ListeBriques =[]
-    for nbx in ListeXDec:
-        for nbz in ListeZDec:
-            if abs((nbx)**2+(nbz+9.5)**2-10**2 )<0.0001 :
-                ListeBriques.append((nbz,nbx))
-
-    
-    random.shuffle(ListeBriques)
-                
+      
+    text1='Bienvenue dans'
+    text2='AIM LAB'
+    vao = Text.initalize_geometry()
+    texture = glutils.load_texture('fontB.jpg')
+    o = Text(text1, np.array([-0.8, 0.3], np.float32), np.array([0.8, 0.8], np.float32), vao, 2, programGUI_id, texture)
+    viewer.add_object(o)
+    o = Text(text2, np.array([-0.5, -0.2], np.float32), np.array([0.5, 0.3], np.float32), vao, 2, programGUI_id, texture)
+    viewer.add_object(o)
+    ListeBriques=viewer.ListeBriques
+    print(len(ListeBriques))
     for i in range (len(ListeBriques)):
         m = Mesh.load_obj('cube.obj')
         m.normalize()
         m.apply_matrix(pyrr.matrix44.create_from_scale([0.5, 0.55, 0.5, 1]))
         tr = Transformation3D()
-        tr.translation.z = ListeBriques[i][0]
-        tr.translation.x =ListeBriques[i][1]
-        tr.translation.y = (random.random())*5+0.5
+        tr.translation.z = ListeBriques[i][2]
+        tr.translation.x =ListeBriques[i][0]
+        tr.translation.y = 0 # ListeBriques[i][1]
         
         texture = glutils.load_texture('wall.jpg')
         o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
@@ -80,11 +78,11 @@ def main():
 
     m = Mesh.load_obj('cube.obj')
     m.normalize()
-    m.apply_matrix(pyrr.matrix44.create_from_scale([0.4, 0.4, 0.4, 1]))
+    m.apply_matrix(pyrr.matrix44.create_from_scale([0.5, 0.55, 0.5, 1]))
     tr = Transformation3D()
-    tr.translation.x = 0
+    tr.translation.x = 12
     tr.translation.y = 2
-    tr.translation.z = 0
+    tr.translation.z = -9.7
     texture = glutils.load_texture('wall.jpg')
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
     viewer.add_object(o)
@@ -115,8 +113,7 @@ def main():
 
     viewer.run()
     
- 
-    
+
 
 
 if __name__ == '__main__':
