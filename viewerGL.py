@@ -14,6 +14,7 @@ import random
 
 class ViewerGL:
     BriqueVisible=0
+    
     def __init__(self):
         # initialisation de la librairie GLFW
         glfw.init()
@@ -96,35 +97,7 @@ class ViewerGL:
             for i in range(len(self.ListeBriques)-1):
                 self.objs[2+i].visible = False 
             self.cible_actuelle = self.objs[1+self.BriqueVisible]
-            print(self.ListeBriques)
 
-
-        # if key == glfw.KEY_S and action == glfw.PRESS:
-        #     self.bool=1
-        #     self.coordXProj = self.mouse_x
-        #     self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0]
-        #     self.coordZCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[2]
-        #     if self.coordXCible <0 and self.coordZCible >-9.5:
-        #         ajout= 0
-        #         self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12)))
-        #     elif self.coordZCible <-9.5:
-        #         ajout= np.pi
-        #         self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12)))
-        #     else:
-        #         ajout = 3*np.pi/2
-        #         self.coordXCible= abs(200*(ajout+np.arc(self.coordXCible/12)))
-
-
-        #     print(self.coordXProj,self.coordXCible)
-        #     if abs(self.coordXProj - self.coordXCible)<20:
-        #         self.cible_actuelle.visible = False
-        #         if self.BriqueVisible == len(self.ListeBriques)-1:
-        #             self.objs[3+self.BriqueVisible].visible = False
-        #             self.BriqueVisible = 0
-        #         self.objs[3+self.BriqueVisible].visible = False
-        #         self.BriqueVisible +=1
-        #         self.objs[3+self.BriqueVisible].visible = True
-        #         self.cible_actuelle=self.objs[3+self.BriqueVisible]
 
     def mouse_button_callback(self,win,button, action,mods):
 
@@ -143,8 +116,8 @@ class ViewerGL:
                 ajout = 3*np.pi/2
                 self.coordXCible= abs(200*(ajout+np.arccos(self.coordXCible/12)))
 
-            print(self.coordXProj,self.coordXCible)
-            if abs(self.coordXProj - self.coordXCible)<20:
+            y_traite = -12.006*self.y_brut +3.0126
+            if abs(self.coordXProj - self.coordXCible)<15 and abs(y_traite-pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[1])<0.5:
                 self.cible_actuelle.visible = False    
 
                 if self.BriqueVisible == len(self.ListeBriques)-1:
@@ -154,7 +127,7 @@ class ViewerGL:
                 self.BriqueVisible +=1
                 self.objs[1+self.BriqueVisible].visible = True
                 self.cible_actuelle=self.objs[1+self.BriqueVisible]
-                print(pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1))
+           
     
     def cursor_position_callback(self, win, xpos, ypos):
         if self.debut:
@@ -174,11 +147,10 @@ class ViewerGL:
             if self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y)*0.01/2<=1 and ypos-self.mouse_y >0:
                 self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += (ypos-self.mouse_y)*0.01/2
 
-
+            self.y_brut = self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y) *0.01/2
         self.mouse_x = xmod
         self.mouse_y = ypos
 
-        print(self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y) *0.01/2,pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[1])
 
 
 
