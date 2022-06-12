@@ -143,15 +143,18 @@ class ViewerGL:
                 ajout = 3*np.pi/2
                 self.coordXCible= abs(200*(ajout+np.arccos(self.coordXCible/12)))
 
+            print(self.coordXProj,self.coordXCible)
+            if abs(self.coordXProj - self.coordXCible)<20:
+                self.cible_actuelle.visible = False    
 
-            if self.BriqueVisible == len(self.ListeBriques)-1:
+                if self.BriqueVisible == len(self.ListeBriques)-1:
+                    self.objs[1+self.BriqueVisible].visible = False
+                    self.BriqueVisible = 0  
                 self.objs[1+self.BriqueVisible].visible = False
-                self.BriqueVisible = 0  
-            self.objs[1+self.BriqueVisible].visible = False
-            self.BriqueVisible +=1
-            self.objs[1+self.BriqueVisible].visible = True
-            self.cible_actuelle=self.objs[1+self.BriqueVisible]
-            print(pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1))
+                self.BriqueVisible +=1
+                self.objs[1+self.BriqueVisible].visible = True
+                self.cible_actuelle=self.objs[1+self.BriqueVisible]
+                print(pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1))
     
     def cursor_position_callback(self, win, xpos, ypos):
         if self.debut:
@@ -175,7 +178,7 @@ class ViewerGL:
         self.mouse_x = xmod
         self.mouse_y = ypos
 
-       # print(self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] + (xmod-self.mouse_x) *0.01/2)
+        print(self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y) *0.01/2,pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[1])
 
 
 
