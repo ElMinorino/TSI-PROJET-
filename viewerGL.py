@@ -89,13 +89,13 @@ class ViewerGL:
 
         if key == glfw.KEY_T and action == glfw.PRESS:
             print(self.mouse_x)
-
-        if key == glfw.KEY_ENTER and action == glfw.PRESS :
-            self.objs[1].visible = False
-            self.objs[2].visible = False
+        
+        if key == glfw.KEY_ENTER and action == glfw.PRESS : 
+            self.objs[8+len(self.ListeBriques)].visible = False
+            self.objs[9+len(self.ListeBriques)].visible = False
             for i in range(len(self.ListeBriques)-1):
-                self.objs[4+i].visible = False
-            self.cible_actuelle = self.objs[3+self.BriqueVisible]
+                self.objs[2+i].visible = False 
+            self.cible_actuelle = self.objs[1+self.BriqueVisible]
             print(self.ListeBriques)
 
 
@@ -144,18 +144,15 @@ class ViewerGL:
                 self.coordXCible= abs(200*(ajout+np.arccos(self.coordXCible/12)))
 
 
-            print(self.coordXProj,self.coordXCible)
-            if abs(self.coordXProj - self.coordXCible)<20:
-                self.cible_actuelle.visible = False
-                if self.BriqueVisible == len(self.ListeBriques)-1:
-                    self.objs[3+self.BriqueVisible].visible = False
-                    self.BriqueVisible = 0
-                self.objs[3+self.BriqueVisible].visible = False
-                self.BriqueVisible +=1
-                self.objs[3+self.BriqueVisible].visible = True
-                self.cible_actuelle=self.objs[3+self.BriqueVisible]
-                print(pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1))
-
+            if self.BriqueVisible == len(self.ListeBriques)-1:
+                self.objs[1+self.BriqueVisible].visible = False
+                self.BriqueVisible = 0  
+            self.objs[1+self.BriqueVisible].visible = False
+            self.BriqueVisible +=1
+            self.objs[1+self.BriqueVisible].visible = True
+            self.cible_actuelle=self.objs[1+self.BriqueVisible]
+            print(pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1))
+    
     def cursor_position_callback(self, win, xpos, ypos):
         if self.debut:
             self.modif= xpos
