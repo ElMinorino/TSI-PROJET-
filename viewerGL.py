@@ -97,14 +97,16 @@ class ViewerGL:
                 self.objs[4+i].visible = False 
             self.cible_actuelle = self.objs[3+self.BriqueVisible]
             print(self.ListeBriques)
+            
+            
         if key == glfw.KEY_S and action == glfw.PRESS:
             self.bool=1
             self.coordXProj = self.mouse_x
             self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0]
             self.coordZCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[2]
-            if self.coordXCible > -13.1 and self.coordXCible <0 and self.coordZCible >-9.5 and self.coordZCible <3.1:
+            if self.coordXCible <0 and self.coordZCible >-9.5:
                 ajout= 0   
-            elif self.coordXCible > -13.1 and self.coordXCible <0 and self.coordZCible >-22.1 and self.coordZCible <-9.5:
+            elif self.coordXCible <0  and self.coordZCible <-9.5:
                 ajout= np.pi/2
             elif self.coordXCible > 0 and self.coordXCible <13.1 and self.coordZCible >-22.1 and self.coordZCible <-9.5:
                 ajout = np.pi
@@ -136,7 +138,7 @@ class ViewerGL:
             self.modif= xpos 
             self.debut=False
         xmod=(xpos-self.modif) % 1256
-
+        
         if self.mouse_x != None and self.mouse_y != None:
             self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += (xmod-self.mouse_x) *0.01/2
             self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] +=  (xmod-self.mouse_x) *0.01/2 
@@ -152,7 +154,7 @@ class ViewerGL:
        
         self.mouse_x = xmod
         self.mouse_y = ypos
-
+        print(self.mouse_x)
        # print(self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] + (xmod-self.mouse_x) *0.01/2)
 
    

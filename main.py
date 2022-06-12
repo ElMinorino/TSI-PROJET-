@@ -69,6 +69,9 @@ def main():
     o= Text("x", np.array([ -0.05, 0.15], np.float32), np.array([0.05,0.05],np.float32), vao, 2, programGUI_id, texture)
     viewer.add_object(o)
 
+
+
+
     m = Mesh.load_obj('cube.obj')
     m.normalize()
     m.apply_matrix(pyrr.matrix44.create_from_scale([0.05, 0.05, 0.05, 1]))
