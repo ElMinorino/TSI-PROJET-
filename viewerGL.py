@@ -96,17 +96,23 @@ class ViewerGL:
             for i in range(len(self.ListeBriques)-1):
                 self.objs[4+i].visible = False 
             self.cible_actuelle = self.objs[3+self.BriqueVisible]
-            print(pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1))
-
+            print(self.ListeBriques)
         if key == glfw.KEY_S and action == glfw.PRESS:
             self.bool=1
             self.coordXProj = self.mouse_x
             self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0]
             self.coordZCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[2]
-            if self.coordZCible < -9.6:
-                self.coordXCible= 200*(np.pi-np.arccos(self.coordXCible/12))
-            else : 
-                self.coordXCible= 200*(np.arccos(self.coordXCible/12)+np.pi)  
+            if self.coordXCible > -13.1 and self.coordXCible <0 and self.coordZCible >-9.5 and self.coordZCible <3.1:
+                ajout= 0   
+            elif self.coordXCible > -13.1 and self.coordXCible <0 and self.coordZCible >-22.1 and self.coordZCible <-9.5:
+                ajout= np.pi/2
+            elif self.coordXCible > 0 and self.coordXCible <13.1 and self.coordZCible >-22.1 and self.coordZCible <-9.5:
+                ajout = np.pi
+            else:
+                ajout = 3*np.pi/2
+                
+            self.coordXCible= 200*(ajout+np.arccos(self.coordXCible/12))
+
             print(self.coordXProj,self.coordXCible)  
             if self.coordXProj == self.coordXCible:
                 self.cible_actuelle.visible = False
