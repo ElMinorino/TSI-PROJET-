@@ -11,6 +11,7 @@ import math
 import numpy as np
 from cpe3d import Object3D
 import random
+import time
 
 class ViewerGL:
     BriqueVisible=0
@@ -25,7 +26,7 @@ class ViewerGL:
         glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
         # création et paramétrage de la fenêtre
         glfw.window_hint(glfw.RESIZABLE, False)
-        self.window = glfw.create_window(1200, 1200, 'OpenGL', None, None)
+        self.window = glfw.create_window(1600, 1200, 'OpenGL', None, None)
 
         glfw.set_input_mode(self.window,glfw.CURSOR,glfw.CURSOR_DISABLED)
         # paramétrage de la fonction de gestion des évènements
@@ -51,13 +52,25 @@ class ViewerGL:
         self.ListeBriques = self.creer_liste()
         self.debut=True
         self.modif= None
-
+        self.points=0
+        self.tirs= 0
+        self.debut_partie=0
     def run(self):
         # boucle d'affichage
         self.first_update()
+
         while not glfw.window_should_close(self.window):
             # nettoyage de la fenêtre : fond et profondeur
             GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+            # print(self.debut_partie,glfw.get_time())
+            # print(self.points)
+            if glfw.get_time()-self.debut_partie >40:
+                time.sleep(2)
+                print('Partie terminée ', 'vous avez touché ',self.points, ' cibles ! ', 'Début de la nouvelle partie.')
+                print('Précision: ',int((self.points/self.tirs)*100),' %')
+                self.points=0
+                self.tirs=0
+                self.debut_partie=glfw.get_time()
 
 
             for obj in self.objs:
@@ -88,10 +101,15 @@ class ViewerGL:
             glfw.set_window_should_close(win, glfw.TRUE)
         self.touch[key] = action
 
-        if key == glfw.KEY_T and action == glfw.PRESS:
-            print(self.mouse_x)
+
+
+
+        
+                                   
         
         if key == glfw.KEY_ENTER and action == glfw.PRESS : 
+            self.initialisation()
+            self.debut_partie=glfw.get_time()
             self.objs[8+len(self.ListeBriques)].visible = False
             self.objs[9+len(self.ListeBriques)].visible = False
             for i in range(len(self.ListeBriques)-1):
@@ -106,10 +124,10 @@ class ViewerGL:
             self.coordXProj = self.mouse_x
             self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0]
             self.coordZCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[2]
-            if self.coordXCible <0 and self.coordZCible >-9.5:
+            if self.coordXCible <0 and self.coordZCible >-12:
                 ajout= 0
                 self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12)))
-            elif self.coordZCible <-9.5:
+            elif self.coordZCible <-12:
                 ajout= np.pi
                 self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12)))
             else:
@@ -117,9 +135,9 @@ class ViewerGL:
                 self.coordXCible= abs(200*(ajout+np.arccos(self.coordXCible/12)))
 
             y_traite = -12.006*self.y_brut +3.0126
-            if abs(self.coordXProj - self.coordXCible)<15 and abs(y_traite-pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[1])<0.5:
+            if abs(self.coordXProj- self.coordXCible) <10  and abs(y_traite-pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[1])<0.5:
                 self.cible_actuelle.visible = False    
-
+                self.points+=1
                 if self.BriqueVisible == len(self.ListeBriques)-1:
                     self.objs[1+self.BriqueVisible].visible = False
                     self.BriqueVisible = 0  
@@ -127,7 +145,8 @@ class ViewerGL:
                 self.BriqueVisible +=1
                 self.objs[1+self.BriqueVisible].visible = True
                 self.cible_actuelle=self.objs[1+self.BriqueVisible]
-           
+            
+            self.tirs +=1
            
            
            
@@ -228,3 +247,9 @@ class ViewerGL:
 
         random.shuffle(ListeBriques)
         return ListeBriques
+
+
+    def initialisation(self):
+        for i in range (len(self.ListeBriques)):
+            self.objs[1+i].transformation.translation -= \
+                    pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[1+i].transformation.rotation_euler), pyrr.Vector3([-self.ListeBriques[i][0], -self.ListeBriques[i][1], -self.ListeBriques[i][2]]))
