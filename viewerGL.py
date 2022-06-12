@@ -178,7 +178,7 @@ class ViewerGL:
         self.mouse_x = xmod
         self.mouse_y = ypos
 
-        print(self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y) *0.01/2,pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[1])
+        # print(self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y) *0.01/2,pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[1])
 
 
 
