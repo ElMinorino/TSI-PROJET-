@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from math import sqrt
+from cmath import pi
 from enum import auto
 from tkinter import Button
 import OpenGL.GL as GL
@@ -10,9 +10,10 @@ import pyrr
 import math
 import numpy as np
 from cpe3d import Object3D
+import random
 
 class ViewerGL:
-    BriqueVisible=0
+    BriqueVisible=0   
     def __init__(self):
         # initialisation de la librairie GLFW
         glfw.init()
@@ -45,8 +46,10 @@ class ViewerGL:
         self.mouse_x= None
         self.mouse_y = None
         self.cible = 2
-
-
+        self.cible_actuelle = None
+        self.ListeBriques = self.creer_liste()
+        self.debut=True
+        self.modif= None
 
     def run(self):
         # boucle d'affichage
@@ -54,7 +57,7 @@ class ViewerGL:
         while not glfw.window_should_close(self.window):
             # nettoyage de la fenêtre : fond et profondeur
             GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-            
+
 
             for obj in self.objs:
                 GL.glUseProgram(obj.program)
@@ -67,8 +70,11 @@ class ViewerGL:
                     pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[25].transformation.rotation_euler), pyrr.Vector3([0, 0, -1]))      
             self.bool=0
 
-            if sqrt(pow(self.objs[25].transformation.rotation_euler[0] - self.objs[26].transformation.translation[0], 2) + pow(self.objs[25].transformation.rotation_euler[1] - self.objs[26].transformation.translation[1], 2) + pow(self.objs[25].transformation.rotation_euler[2] - self.objs[26].transformation.translation[2], 2)) < self.cible:
-                self.objs[26].visible = False
+            # if sqrt(pow(self.objs[25].transformation.rotation_euler[0] - self.objs[26].transformation.translation[0], 2) + pow(self.objs[25].transformation.rotation_euler[1] - self.objs[26].transformation.translation[1], 2) + pow(self.objs[25].transformation.rotation_euler[2] - self.objs[26].transformation.translation[2], 2)) < self.cible:
+            #     self.objs[26].visible = False
+
+            
+
 
             # changement de buffer d'affichage pour éviter un effet de scintillement
             glfw.swap_buffers(self.window)
@@ -81,41 +87,67 @@ class ViewerGL:
             glfw.set_window_should_close(win, glfw.TRUE)
         self.touch[key] = action
         
+        if key == glfw.KEY_T and action == glfw.PRESS:
+            print(self.mouse_x)
         
         if key == glfw.KEY_ENTER and action == glfw.PRESS : 
             self.objs[1].visible = False
             self.objs[2].visible = False
-            for i in range(19):
+            for i in range(len(self.ListeBriques)-1):
                 self.objs[4+i].visible = False 
-                
+            self.cible_actuelle = self.objs[3+self.BriqueVisible]
+            print(pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1))
+
         if key == glfw.KEY_S and action == glfw.PRESS:
             self.bool=1
+            self.coordXProj = self.mouse_x
+            self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0]
+            self.coordZCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[2]
+            if self.coordZCible < -9.6:
+                self.coordXCible= 200*(np.pi-np.arccos(self.coordXCible/12))
+            else : 
+                self.coordXCible= 200*(np.arccos(self.coordXCible/12)+np.pi)  
+            print(self.coordXProj,self.coordXCible)  
+            if self.coordXProj == self.coordXCible:
+                self.cible_actuelle.visible = False
+                
+    def mouse_button_callback(self,win,button, action,mods):
 
-    def mouse_button_callback(self,win,button, action,mods):          
         if button == glfw.MOUSE_BUTTON_LEFT and action == glfw.PRESS :
+           
 
-            if self.BriqueVisible == 19:
+            if self.BriqueVisible == len(self.ListeBriques)-1:
                 self.objs[3+self.BriqueVisible].visible = False
                 self.BriqueVisible = 0  
             self.objs[3+self.BriqueVisible].visible = False
             self.BriqueVisible +=1
             self.objs[3+self.BriqueVisible].visible = True
-    
+            self.cible_actuelle=self.objs[3+self.BriqueVisible]
+            print(pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1))
     
     def cursor_position_callback(self, win, xpos, ypos):
-        if self.mouse_x != None and self.mouse_y != None:
+        if self.debut:
+            self.modif= xpos 
+            self.debut=False
+        xmod=(xpos-self.modif) % 1256
 
-            self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += (xpos-self.mouse_x) *0.01/2
-            self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] +=  (xpos-self.mouse_x) *0.01/2 
+        if self.mouse_x != None and self.mouse_y != None:
+            self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += (xmod-self.mouse_x) *0.01/2
+            self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] +=  (xmod-self.mouse_x) *0.01/2 
             
             if self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y)*0.01/2>=-0.4 and ypos-self.mouse_y <0:
                 self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += (ypos-self.mouse_y)*0.01/2
-                
+            
+            
+            
             if self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y)*0.01/2<=1 and ypos-self.mouse_y >0:
                 self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += (ypos-self.mouse_y)*0.01/2               
-        
-        self.mouse_x = xpos
+
+       
+        self.mouse_x = xmod
         self.mouse_y = ypos
+
+       # print(self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] + (xmod-self.mouse_x) *0.01/2)
 
    
 
@@ -173,3 +205,20 @@ class ViewerGL:
         self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += np.pi
         self.cam.transformation.rotation_center = self.objs[0].transformation.translation + self.objs[0].transformation.rotation_center
         self.cam.transformation.translation = self.objs[0].transformation.translation + pyrr.Vector3([0, 1, 5])
+    
+    def creer_liste(self):
+                
+        ListeXDec= [i for i in np.arange(-12.1,12,0.1)]
+
+        ListeZDec= [i for i in np.arange(-21.5,2.5,0.1)]
+
+        ListeBriques =[]
+        for nbx in ListeXDec:
+            for nbz in ListeZDec:
+                if abs((nbx)**2+(nbz+9.5)**2-12**2 )<0.05 :
+                    nby=random.random()*5+1
+                    ListeBriques.append((nbx,nby,nbz))
+
+        
+        random.shuffle(ListeBriques)
+        return ListeBriques
