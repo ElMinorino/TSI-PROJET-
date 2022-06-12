@@ -135,7 +135,7 @@ class ViewerGL:
     
     def cursor_position_callback(self, win, xpos, ypos):
         if self.debut:
-            self.modif= xpos 
+            self.modif= xpos-628
             self.debut=False
         xmod=(xpos-self.modif) % 1256
         
