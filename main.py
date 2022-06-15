@@ -76,7 +76,7 @@ def main():
     m.faces = np.array([[0, 1, 2], [0, 2, 3]], np.uint32)
     texture = glutils.load_texture('grass.jpg')
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
-    viewer.add_object(o)
+    viewer.add_decors(o)
 
     m = Mesh.load_obj('cube.obj')
     m.normalize()
@@ -87,7 +87,7 @@ def main():
     tr.translation.z = -9
     texture = glutils.load_texture('wall.jpg')
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
-    viewer.add_object(o)
+    viewer.add_decors(o)
 
     m = Mesh()
     p0, p1, p2, p3 = [-15, 0, 5], [15, 0, 5], [15, 10, 5], [-15, 10, 5]
@@ -97,7 +97,7 @@ def main():
     m.faces = np.array([[0, 1, 2], [0, 2, 3]], np.uint32)
     texture = glutils.load_texture('fond.jpg')
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
-    viewer.add_object(o)
+    viewer.add_decors(o)
 
     m = Mesh()
     p0, p1, p2, p3 = [15, 0, 5], [15, 0, -24], [15, 10, -24], [15, 10, 5]
@@ -107,7 +107,7 @@ def main():
     m.faces = np.array([[0, 1, 2], [0, 2, 3]], np.uint32)
     texture = glutils.load_texture('fond.jpg')
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
-    viewer.add_object(o)
+    viewer.add_decors(o)
 
     m = Mesh()
     p0, p1, p2, p3 = [-15, 0, -24], [15, 0, -24], [15, 10, -24], [-15, 10, -24]
@@ -117,7 +117,7 @@ def main():
     m.faces = np.array([[0, 1, 2], [0, 2, 3]], np.uint32)
     texture = glutils.load_texture('fond.jpg')
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
-    viewer.add_object(o)
+    viewer.add_decors(o)
 
     m = Mesh()
     p0, p1, p2, p3 = [-15, 0, 5], [-15, 0, -24], [-15, 10, -24], [-15, 10, 5]
@@ -127,7 +127,7 @@ def main():
     m.faces = np.array([[0, 1, 2], [0, 2, 3]], np.uint32)
     texture = glutils.load_texture('fond.jpg')
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
-    viewer.add_object(o)
+    viewer.add_decors(o)
 
     m = Mesh()
     p0, p1, p2, p3 = [-15, 10, -24], [15, 10, -24], [15, 10, 5], [-15, 10, 5]
@@ -137,23 +137,37 @@ def main():
     m.faces = np.array([[0, 1, 2], [0, 2, 3]], np.uint32)
     texture = glutils.load_texture('fond.jpg')
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
-    viewer.add_object(o)
+    viewer.add_decors(o)
 
 
     vao = Text.initalize_geometry()
     texture = glutils.load_texture('fontB.jpg')
-    o = Text('Bienvenue dans AIM LAB', np.array([-0.8, 0.3], np.float32), np.array([0.8, 0.8], np.float32), vao, 2, programGUI_id, texture)
-    viewer.add_object(o)#34
-
-    o = Text('Appuyez sur Entree pour commencer', np.array([-0.8, -0.2], np.float32), np.array([0.8, 0.3], np.float32), vao, 2, programGUI_id, texture)
-    viewer.add_object(o) #35
-
-   
-    vao = Text.initalize_geometry()
-    texture = glutils.load_texture('fontB.jpg')
+    o = Text('Bienvenue dans AIM LAB', np.array([-0.8, 0.3], np.float32), np.array([0.8, 0.6], np.float32), vao, 2, programGUI_id, texture)
+    viewer.add_textes(o)#34
+    o = Text('Mode competitif            Mode entrainement', np.array([-1, 0], np.float32), np.array([1,0.3], np.float32), vao, 2, programGUI_id, texture)
+    viewer.add_textes(o)#34
+    o = Text('Touche A                     Touche B ', np.array([-1, -0.5], np.float32), np.array([1, -0.2], np.float32), vao, 2, programGUI_id, texture)
+    viewer.add_textes(o) #35
     o= Text("x", np.array([ -0.05, 0.15], np.float32), np.array([0.05,0.05],np.float32), vao, 2, programGUI_id, texture)
-    viewer.add_object(o) #self.objs[40]
-    
+    viewer.add_textes(o) #self.objs[40]
+    o= Text("Score : ", np.array([ -1, 0.9], np.float32), np.array([-0.8,1],np.float32), vao, 2, programGUI_id, texture)
+    viewer.add_textes(o)
+    o= Text("Temps restant : ", np.array([ -1, 0.8], np.float32), np.array([-0.7,0.9],np.float32), vao, 2, programGUI_id, texture)
+    viewer.add_textes(o)
+    o= Text(" secondes", np.array([ -0.6, 0.8], np.float32), np.array([-0.4,0.9],np.float32), vao, 2, programGUI_id, texture)
+    viewer.add_textes(o)
+    o= Text("Precision : ", np.array([ -1, 0.7], np.float32), np.array([-0.8,0.8],np.float32), vao, 2, programGUI_id, texture)
+    viewer.add_textes(o)
+    o= Text("", np.array([ -0.8, 0.7], np.float32), np.array([-0.7,0.8],np.float32), vao, 2, programGUI_id, texture)
+    viewer.add_textes(o)
+    o= Text("", np.array([ -0.7, 0.8], np.float32), np.array([-0.6,0.9],np.float32), vao, 2, programGUI_id, texture)
+    viewer.add_textes(o)
+    o= Text('0', np.array([ -0.8, 0.9], np.float32), np.array([-0.7,1],np.float32), vao, 2, programGUI_id, texture)
+    viewer.add_textes(o)
+    print(len(viewer.textes))
+    print(len(viewer.decors))
+    print(len(viewer.objs))
+    print(len(viewer.textes + viewer.decors + viewer.objs))
 
     viewer.run()
     

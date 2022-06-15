@@ -43,10 +43,12 @@ class ViewerGL:
         print(f"OpenGL: {GL.glGetString(GL.GL_VERSION).decode('ascii')}")
 
         self.objs = []
+        self.textes=[]
+        self.decors=[]
         self.touch = {}
         self.bool = 0
-        self.mouse_x= None
-        self.mouse_y = None
+        self.mouse_x= 0
+        self.mouse_y = 0
         self.cible = 2
         self.cible_actuelle = None
         self.ListeBriques = self.creer_liste()
@@ -55,6 +57,12 @@ class ViewerGL:
         self.points=0
         self.tirs= 0
         self.debut_partie=0
+        self.y_traite=0
+        self.valx=0
+        self.mode = None
+        self.demarrage= False 
+        
+    
     def run(self):
         # boucle d'affichage
         self.first_update()
@@ -62,27 +70,33 @@ class ViewerGL:
         while not glfw.window_should_close(self.window):
             # nettoyage de la fenêtre : fond et profondeur
             GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-            # print(self.debut_partie,glfw.get_time())
-            # print(self.points)
-            if glfw.get_time()-self.debut_partie >40:
-                time.sleep(2)
-                print('Partie terminée ', 'vous avez touché ',self.points, ' cibles ! ', 'Début de la nouvelle partie.')
-                print('Précision: ',int((self.points/self.tirs)*100),' %')
-                self.points=0
-                self.tirs=0
-                self.debut_partie=glfw.get_time()
+            self.textes[-1].value = str(self.points)
+            if self.tirs !=0:
+                self.textes[-3].value= str(round((self.points/self.tirs)*100))
+            else:
+                self.textes[-3].value= ''
+            if self.mode==1:
+                if glfw.get_time()-self.debut_partie >40:
+                    time.sleep(3)
+                    self.points=0
+                    self.tirs=0
+                    self.debut_partie=glfw.get_time()
+                elif self.debut_partie>0:
+                    self.textes[-2].value = str(int(40-glfw.get_time()+self.debut_partie))
+            elif self.mode ==2:
+                self.textes[-2].value = 'infini'
+                
 
-
-            for obj in self.objs:
+            for obj in (self.decors+self.objs+self.textes):
                 GL.glUseProgram(obj.program)
-                if isinstance(obj, Object3D):
+                if isinstance(obj, Object3D):   
                     self.update_camera(obj.program)
                 obj.draw()
 
             # if(self.bool):
-            #     self.objs[25].transformation.translation -= \
-            #         pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[25].transformation.rotation_euler), pyrr.Vector3([0, 0, -1]))
-            # self.bool=0
+            #      self.objs[25].transformation.translation -= \
+            #          pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[25].transformation.rotation_euler), pyrr.Vector3([0, 0, -1]))
+            #  self.bool=0
 
             # if sqrt(pow(self.objs[25].transformation.rotation_euler[0] - self.objs[26].transformation.translation[0], 2) + pow(self.objs[25].transformation.rotation_euler[1] - self.objs[26].transformation.translation[1], 2) + pow(self.objs[25].transformation.rotation_euler[2] - self.objs[26].transformation.translation[2], 2)) < self.cible:
             #     self.objs[26].visible = False
@@ -103,81 +117,99 @@ class ViewerGL:
 
 
 
+        # if key == glfw.KEY_S and action == glfw.PRESS : 
+        #     self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0]
 
-        
+        #     print(self.coordXCible)
+        #     self.objs[2+len(self.ListeBriques)].transformation.translation -= \
+        #         pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[2+len(self.ListeBriques)].transformation.rotation_euler), pyrr.Vector3([self.coordXCible/4,-(-12.006*self.y_brut +3.0126)/4 , 0]))
                                    
         
-        if key == glfw.KEY_ENTER and action == glfw.PRESS : 
-            self.initialisation()
-            self.debut_partie=glfw.get_time()
-            self.objs[8+len(self.ListeBriques)].visible = False
-            self.objs[9+len(self.ListeBriques)].visible = False
-            for i in range(len(self.ListeBriques)-1):
-                self.objs[2+i].visible = False 
-            self.cible_actuelle = self.objs[1+self.BriqueVisible]
+       
+        if key== glfw.KEY_Q and action == glfw.PRESS :
+            if not(self.demarrage):
+                self.mode= 1
+                self.initialisation()
+
+                 
+        if key == glfw.KEY_B and action == glfw.PRESS:
+            if not (self.demarrage):
+                self.mode =2 
+                self.initialisation()
+
 
 
     def mouse_button_callback(self,win,button, action,mods):
+        if self.demarrage :
 
-        if button == glfw.MOUSE_BUTTON_LEFT and action == glfw.PRESS :
-            self.bool=1
-            self.coordXProj = self.mouse_x
-            self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0]
-            self.coordZCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[2]
-            if self.coordXCible <0 and self.coordZCible >-12:
-                ajout= 0
-                self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12)))
-            elif self.coordZCible <-12:
-                ajout= np.pi
-                self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12)))
-            else:
-                ajout = 3*np.pi/2
-                self.coordXCible= abs(200*(ajout+np.arccos(self.coordXCible/12)))
+            if button == glfw.MOUSE_BUTTON_LEFT and action == glfw.PRESS :
+                self.bool=1
+                self.coordXProj = self.mouse_x
+                self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0]
+                self.coordZCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[2]
+                if self.coordXCible <0 and self.coordZCible >-12:
+                    ajout= 0
+                    self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12)))
+                elif self.coordZCible <-12:
+                    ajout= np.pi
+                    self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12)))
+                else:
+                    ajout = 3*np.pi/2
+                    self.coordXCible= abs(200*(ajout+np.arccos(self.coordXCible/12)))
+                
 
-            y_traite = -12.006*self.y_brut +3.0126
-            if abs(self.coordXProj- self.coordXCible) <10  and abs(y_traite-pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[1])<0.5:
-                self.cible_actuelle.visible = False    
-                self.points+=1
-                if self.BriqueVisible == len(self.ListeBriques)-1:
+                self.y_traite = -12.006*self.y_brut +3.0126
+                if abs(self.coordXProj- self.coordXCible) <10  and abs(self.y_traite-pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[1])<0.5:
+                    self.cible_actuelle.visible = False    
+                    self.points+=1
+                    if self.BriqueVisible == len(self.ListeBriques)-1:
+                        self.objs[1+self.BriqueVisible].visible = False
+                        self.BriqueVisible = 0  
                     self.objs[1+self.BriqueVisible].visible = False
-                    self.BriqueVisible = 0  
-                self.objs[1+self.BriqueVisible].visible = False
-                self.BriqueVisible +=1
-                self.objs[1+self.BriqueVisible].visible = True
-                self.cible_actuelle=self.objs[1+self.BriqueVisible]
+                    self.BriqueVisible +=1
+                    self.objs[1+self.BriqueVisible].visible = True
+                    self.cible_actuelle=self.objs[1+self.BriqueVisible]
+                
+                self.tirs +=1
             
-            self.tirs +=1
-           
-           
+            
            
     
     def cursor_position_callback(self, win, xpos, ypos):
-        if self.debut:
-            self.modif= xpos
-            self.debut=False
-        xmod=(xpos-self.modif) % 1256
+        if self.demarrage:
+            if self.debut:
+                self.modif= xpos
+                self.debut=False
+            xmod=(xpos-self.modif) % 1256
+            self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0]
+            self.valx
+            if self.mouse_x != None and self.mouse_y != None:
+                self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += (xmod-self.mouse_x) *0.01/2
+                self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] +=  (xmod-self.mouse_x) *0.01/2
 
-        if self.mouse_x != None and self.mouse_y != None:
-            self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += (xmod-self.mouse_x) *0.01/2
-            self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] +=  (xmod-self.mouse_x) *0.01/2
-
-            if self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y)*0.01/2>=-0.4 and ypos-self.mouse_y <0:
-                self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += (ypos-self.mouse_y)*0.01/2
+                if self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y)*0.01/2>=-0.4 and ypos-self.mouse_y <0:
+                    self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += (ypos-self.mouse_y)*0.01/2
 
 
 
-            if self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y)*0.01/2<=1 and ypos-self.mouse_y >0:
-                self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += (ypos-self.mouse_y)*0.01/2
+                if self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y)*0.01/2<=1 and ypos-self.mouse_y >0:
+                    self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += (ypos-self.mouse_y)*0.01/2
 
-            self.y_brut = self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y) *0.01/2
-        self.mouse_x = xmod
-        self.mouse_y = ypos
+                self.y_brut = self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y) *0.01/2
+            self.mouse_x = xmod
+            self.mouse_y = ypos
 
 
 
 
     def add_object(self, obj):
         self.objs.append(obj)
+    
+    def add_textes(self,text):
+        self.textes.append(text)
+    
+    def add_decors(self,decor):
+        self.decors.append(decor)
 
     def set_camera(self, cam):
         self.cam = cam
@@ -253,3 +285,11 @@ class ViewerGL:
         for i in range (len(self.ListeBriques)):
             self.objs[1+i].transformation.translation -= \
                     pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[1+i].transformation.rotation_euler), pyrr.Vector3([-self.ListeBriques[i][0], -self.ListeBriques[i][1], -self.ListeBriques[i][2]]))
+        self.demarrage = True
+        self.debut_partie=glfw.get_time()
+        self.textes[0].visible = False
+        self.textes[1].visible = False
+        self.textes[2].visible = False     
+        for i in range(len(self.ListeBriques)-1):
+            self.objs[2+i].visible = False 
+        self.cible_actuelle = self.objs[1+self.BriqueVisible]
