@@ -156,6 +156,7 @@ class ViewerGL:
            
     
     def cursor_position_callback(self, win, xpos, ypos):
+        print(xpos, ypos)
         if self.demarrage:
             if self.debut:
                 self.modif= xpos
