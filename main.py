@@ -43,6 +43,7 @@ def main():
         y = r * np.outer(np.sin(u), np.sin(v))
         z = r * np.outer(np.ones(np.size(u)), np.cos(v))
         p0, p1, p2, p3 = [x, y, z], [x, y, z], [x, y, z], [x, y, z]
+        # n, c = [0, 2, -9.5], [0, 2, -9.5]
         t0, t1, t2, t3 = [0, 0], [1, 0], [1, 1], [0, 1]
 
         points = []
@@ -117,15 +118,15 @@ def main():
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
     viewer.add_decors(o)
 
-    m = Mesh()
-    p0, p1, p2, p3 = [-15, 10, -24], [15, 10, -24], [15, 10, 5], [-15, 10, 5]
-    n, c = [0, 1, 0], [1, 1, 1]
-    t0, t1, t2, t3 = [0, 0], [1, 0], [1, 1], [0, 1]
-    m.vertices = np.array([[p0 + n + c + t0], [p1 + n + c + t1], [p2 + n + c + t2], [p3 + n + c + t3]], np.float32)
-    m.faces = np.array([[0, 1, 2], [0, 2, 3]], np.uint32)
-    texture = glutils.load_texture('fond.jpg')
-    o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
-    viewer.add_decors(o)
+    # m = Mesh()
+    # p0, p1, p2, p3 = [-15, 10, -24], [15, 10, -24], [15, 10, 5], [-15, 10, 5]
+    # n, c = [0, 1, 0], [1, 1, 1]
+    # t0, t1, t2, t3 = [0, 0], [1, 0], [1, 1], [0, 1]
+    # m.vertices = np.array([[p0 + n + c + t0], [p1 + n + c + t1], [p2 + n + c + t2], [p3 + n + c + t3]], np.float32)
+    # m.faces = np.array([[0, 1, 2], [0, 2, 3]], np.uint32)
+    # texture = glutils.load_texture('fond.jpg')
+    # o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
+    # viewer.add_decors(o)
 
 
     vao = Text.initalize_geometry()
