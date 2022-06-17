@@ -117,6 +117,7 @@ def main():
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
     viewer.add_decors(o)
 
+    # mur du haut enleve par soucis de visibilite
     # m = Mesh()
     # p0, p1, p2, p3 = [-15, 10, -24], [15, 10, -24], [15, 10, 5], [-15, 10, 5]
     # n, c = [0, 1, 0], [1, 1, 1]
