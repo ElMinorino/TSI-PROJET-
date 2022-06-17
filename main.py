@@ -11,68 +11,67 @@ import random
 
 
 def main():
-    viewer = ViewerGL()
+    viewer = ViewerGL() 
 
-    viewer.set_camera(Camera())
-    viewer.cam.transformation.translation.y = 2
-    viewer.cam.transformation.rotation_center = viewer.cam.transformation.translation.copy()
+    viewer.set_camera(Camera()) 
+    viewer.cam.transformation.translation.y = 2 # Deplace la camera de 2 unites en y
+    viewer.cam.transformation.rotation_center = viewer.cam.transformation.translation.copy() # Definit le centre de rotation sur la translation de la caméra
 
-    program3d_id = glutils.create_program_from_file('shader.vert', 'shader.frag')
-    programGUI_id = glutils.create_program_from_file('gui.vert', 'gui.frag')
+    program3d_id = glutils.create_program_from_file('shader.vert', 'shader.frag') # Creation du programme
+    programGUI_id = glutils.create_program_from_file('gui.vert', 'gui.frag') # Id du programme pour le GUI
   
 
-    m = Mesh.load_obj('stegosaurus.obj')
-    m.normalize()
-    m.apply_matrix(pyrr.matrix44.create_from_scale([2, 2, 2, 1]))
-    tr = Transformation3D()
-    tr.translation.y = -np.amin(m.vertices, axis=0)[1]
-    tr.translation.z = -9.5
+    m = Mesh.load_obj('stegosaurus.obj') 
+    m.normalize() 
+    m.apply_matrix(pyrr.matrix44.create_from_scale([2, 2, 2, 1])) # Création d'une matrice d'échelle de 2x2x2
+    tr = Transformation3D() 
+    tr.translation.y = -np.amin(m.vertices, axis=0)[1] # Translation de l'objet pour qu'il soit au sol
+    tr.translation.z = -9.5 
     tr.rotation_center.z = 0.2
     texture = glutils.load_texture('stegosaurus.jpg')
-    o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
+    o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr) 
     viewer.add_object(o)
 
-    ListeBriques=viewer.ListeBriques
-    for i in range (len(ListeBriques)):
-        nb_sphere = 50
+    ListeBriques=viewer.ListeBriques # Liste des briques
+    for i in range (len(ListeBriques)): 
+        nb_sphere = 50 
         m = Mesh()
-        u = np.linspace(0, 2 * np.pi, nb_sphere)
-        v = np.linspace(0, np.pi, nb_sphere)
+        u = np.linspace(0, 2 * np.pi, nb_sphere) # Domaine de definition de u 
+        v = np.linspace(0, np.pi, nb_sphere) # Domaine de definition de v 
         r = 0.25
-        x = r * np.outer(np.cos(u), np.sin(v))
-        y = r * np.outer(np.sin(u), np.sin(v))
-        z = r * np.outer(np.ones(np.size(u)), np.cos(v))
-        p0, p1, p2, p3 = [x, y, z], [x, y, z], [x, y, z], [x, y, z]
-        # n, c = [0, 2, -9.5], [0, 2, -9.5]
-        t0, t1, t2, t3 = [0, 0], [1, 0], [1, 1], [0, 1]
+        x = r * np.outer(np.cos(u), np.sin(v)) # x = r * cos(u) * sin(v)
+        y = r * np.outer(np.sin(u), np.sin(v)) # y = r * sin(u) * sin(v)
+        z = r * np.outer(np.ones(np.size(u)), np.cos(v)) # z = r * cos(v)
+        p0, p1, p2, p3 = [x, y, z], [x, y, z], [x, y, z], [x, y, z] # Creation des 4 points de la sphere
+        t0, t1, t2, t3 = [0, 0], [1, 0], [1, 1], [0, 1] # Creation des 4 textures
 
         points = []
-        for i in range(len(u)):
-            for j in range(len(v)):
-                x = r * np.outer(np.cos(u[i]), np.sin(v[j]))
+        for i in range(len(u)): 
+            for j in range(len(v)): 
+                x = r * np.outer(np.cos(u[i]), np.sin(v[j])) 
                 y = r * np.outer(np.sin(u[i]), np.sin(v[j]))
                 z = r * np.outer(np.ones(np.size(u[i])), np.cos(v[j]))
-                sphere = [x, y, z, x/r, y/r, z/r, 1, 0, 0, 0, 0]
-                points.append(sphere)
-        points = np.array(points, np.float32)
-        m.vertices = points
+                sphere = [x, y, z, x/r, y/r, z/r, 1, 0, 0, 0, 0] # Creation de la sphere
+                points.append(sphere) # Ajout de la sphere a la liste des points 
+        points = np.array(points, np.float32) # Conversion de la liste de points en tableau numpy
+        m.vertices = points # Ajout des points a la mesh
         
         t = []
-        for i in range(len(u)-1):
-            for j in range(len(v)-1):
-                t.append([i+j*nb_sphere, i+1+j*nb_sphere, i+(j+1)*nb_sphere])
-                t.append([i+1+(j+1)*nb_sphere, i+1+j*nb_sphere, i+(j+1)*nb_sphere])
-        t = np.array(t, np.uint32)
-        m.faces = t
-        texture = glutils.load_texture('wall.jpg')
-        o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
+        for i in range(len(u)-1): # Creation des triangles
+            for j in range(len(v)-1): 
+                t.append([i+j*nb_sphere, i+1+j*nb_sphere, i+(j+1)*nb_sphere]) # Triangle 1
+                t.append([i+1+(j+1)*nb_sphere, i+1+j*nb_sphere, i+(j+1)*nb_sphere]) # Triangle 2
+        t = np.array(t, np.uint32) 
+        m.faces = t 
+        texture = glutils.load_texture('wall.jpg') 
+        o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D()) 
         viewer.add_object(o)
 
     m = Mesh()
-    p0, p1, p2, p3 = [-25, 0, -25], [25, 0, -25], [25, 0, 25], [-25, 0, 25]
+    p0, p1, p2, p3 = [-25, 0, -25], [25, 0, -25], [25, 0, 25], [-25, 0, 25] 
     n, c = [0, 1, 0], [1, 1, 1]
     t0, t1, t2, t3 = [0, 0], [1, 0], [1, 1], [0, 1]
-    m.vertices = np.array([[p0 + n + c + t0], [p1 + n + c + t1], [p2 + n + c + t2], [p3 + n + c + t3]], np.float32)
+    m.vertices = np.array([[p0 + n + c + t0], [p1 + n + c + t1], [p2 + n + c + t2], [p3 + n + c + t3]], np.float32) 
     m.faces = np.array([[0, 1, 2], [0, 2, 3]], np.uint32)
     texture = glutils.load_texture('grass.jpg')
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
