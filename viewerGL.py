@@ -25,9 +25,9 @@ class ViewerGL:
         glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
         # création et paramétrage de la fenêtre
         glfw.window_hint(glfw.RESIZABLE, False)
-        self.window = glfw.create_window(1600, 1200, 'OpenGL', None, None)
+        self.window = glfw.create_window(1600, 1200, 'OpenGL', None, None) 
 
-        glfw.set_input_mode(self.window,glfw.CURSOR,glfw.CURSOR_DISABLED)
+        glfw.set_input_mode(self.window,glfw.CURSOR,glfw.CURSOR_DISABLED) # Pour ne pas avoir de curseur
         # paramétrage de la fonction de gestion des évènements
         glfw.set_key_callback(self.window, self.key_callback)
         glfw.set_mouse_button_callback(self.window, self.mouse_button_callback)
@@ -106,13 +106,13 @@ class ViewerGL:
         self.touch[key] = action           
         
        
-        if key== glfw.KEY_Q and action == glfw.PRESS :
+        if key== glfw.KEY_Q and action == glfw.PRESS : # Qwerty donc appuyer sur A pour lancer le mode competitif
             if not(self.demarrage):
                 self.mode= 1
                 self.initialisation()
 
                  
-        if key == glfw.KEY_B and action == glfw.PRESS:
+        if key == glfw.KEY_B and action == glfw.PRESS: # B pour lancer le mode infini/entrainement
             if not (self.demarrage):
                 self.mode =2 
                 self.initialisation()
@@ -123,23 +123,23 @@ class ViewerGL:
         if self.demarrage :
 
             if button == glfw.MOUSE_BUTTON_LEFT and action == glfw.PRESS :
-                self.bool=1
-                self.coordXProj = self.mouse_x
-                self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0]
-                self.coordZCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[2]
-                if self.coordXCible <0 and self.coordZCible >-12:
+                self.bool=1 
+                self.coordXProj = self.mouse_x # Definit la coordonnée X de la cible
+                self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0] # Definit la coordonnée X de la cible
+                self.coordZCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[2] # Definit la coordonnée Z de la cible
+                if self.coordXCible <0 and self.coordZCible >-12: # Si la cible est dans la zone de tir
                     ajout= 0
-                    self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12)))
-                elif self.coordZCible <-12:
+                    self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12))) # On calcule la coordonnée X de la cible
+                elif self.coordZCible <-12: 
                     ajout= np.pi
-                    self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12)))
+                    self.coordXCible= abs(200*(ajout+np.arcsin(self.coordXCible/12))) 
                 else:
                     ajout = 3*np.pi/2
                     self.coordXCible= abs(200*(ajout+np.arccos(self.coordXCible/12)))
                 
 
-                self.y_traite = -12.006*self.y_brut +3.0126
-                if abs(self.coordXProj- self.coordXCible) <10  and abs(self.y_traite-pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[1])<0.5:
+                self.y_traite = -12.006*self.y_brut +3.0126 
+                if abs(self.coordXProj- self.coordXCible) <10  and abs(self.y_traite-pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[1])<0.5: 
                     self.cible_actuelle.visible = False    
                     self.points+=1
                     if self.BriqueVisible == len(self.ListeBriques)-1:
@@ -150,7 +150,7 @@ class ViewerGL:
                     self.objs[1+self.BriqueVisible].visible = True
                     self.cible_actuelle=self.objs[1+self.BriqueVisible]
                 
-                self.tirs +=1
+                self.tirs +=1 
             
             
            
@@ -160,14 +160,14 @@ class ViewerGL:
             if self.debut:
                 self.modif= xpos
                 self.debut=False
-            xmod=(xpos-self.modif) % 1256
-            self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0]
+            xmod=(xpos-self.modif) % 1256 
+            self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0] 
             self.valx
-            if self.mouse_x != None and self.mouse_y != None:
-                self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += (xmod-self.mouse_x) *0.01/2
-                self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] +=  (xmod-self.mouse_x) *0.01/2
+            if self.mouse_x != None and self.mouse_y != None: # Si deplacement de la souris
+                self.cam.transformation.rotation_euler[pyrr.euler.index().yaw] += (xmod-self.mouse_x) *0.01/2 # On tourne la caméra
+                self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] +=  (xmod-self.mouse_x) *0.01/2 # On tourne le stegosaur
 
-                if self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y)*0.01/2>=-0.4 and ypos-self.mouse_y <0:
+                if self.cam.transformation.rotation_euler[pyrr.euler.index().roll] + (ypos-self.mouse_y)*0.01/2>=-0.4 and ypos-self.mouse_y <0: 
                     self.cam.transformation.rotation_euler[pyrr.euler.index().roll] += (ypos-self.mouse_y)*0.01/2
 
 
@@ -182,7 +182,7 @@ class ViewerGL:
 
 
 
-    def add_object(self, obj):
+    def add_object(self, obj): 
         self.objs.append(obj)
     
     def add_textes(self,text):
