@@ -43,7 +43,6 @@ def main():
         y = r * np.outer(np.sin(u), np.sin(v))
         z = r * np.outer(np.ones(np.size(u)), np.cos(v))
         p0, p1, p2, p3 = [x, y, z], [x, y, z], [x, y, z], [x, y, z]
-        n, c = [0, 2, -9.5], [0,2, -9.5]
         t0, t1, t2, t3 = [0, 0], [1, 0], [1, 1], [0, 1]
 
         points = []
@@ -52,7 +51,7 @@ def main():
                 x = r * np.outer(np.cos(u[i]), np.sin(v[j]))
                 y = r * np.outer(np.sin(u[i]), np.sin(v[j]))
                 z = r * np.outer(np.ones(np.size(u[i])), np.cos(v[j]))
-                sphere = [x, y, z, x/r, y/r, z/r, 1, 1, 1, 0, 0]
+                sphere = [x, y, z, x/r, y/r, z/r, 1, 0, 0, 0, 0]
                 points.append(sphere)
         points = np.array(points, np.float32)
         m.vertices = points
@@ -76,17 +75,6 @@ def main():
     m.faces = np.array([[0, 1, 2], [0, 2, 3]], np.uint32)
     texture = glutils.load_texture('grass.jpg')
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
-    viewer.add_decors(o)
-
-    m = Mesh.load_obj('cube.obj')
-    m.normalize()
-    m.apply_matrix(pyrr.matrix44.create_from_scale([0.05, 0.05, 0.05, 1]))
-    tr = Transformation3D()
-    tr.translation.x = 0
-    tr.translation.y = 2
-    tr.translation.z = -9
-    texture = glutils.load_texture('wall.jpg')
-    o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
     viewer.add_decors(o)
 
     m = Mesh()
@@ -164,10 +152,6 @@ def main():
     viewer.add_textes(o)
     o= Text('0', np.array([ -0.8, 0.9], np.float32), np.array([-0.7,1],np.float32), vao, 2, programGUI_id, texture)
     viewer.add_textes(o)
-    print(len(viewer.textes))
-    print(len(viewer.decors))
-    print(len(viewer.objs))
-    print(len(viewer.textes + viewer.decors + viewer.objs))
 
     viewer.run()
     
