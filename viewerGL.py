@@ -14,7 +14,6 @@ import random
 import time
 
 class ViewerGL:
-    BriqueVisible=0
     
     def __init__(self):
         # initialisation de la librairie GLFW
@@ -49,7 +48,6 @@ class ViewerGL:
         self.bool = 0
         self.mouse_x= 0
         self.mouse_y = 0
-        self.cible = 2
         self.cible_actuelle = None
         self.ListeBriques = self.creer_liste()
         self.debut=True
@@ -61,6 +59,7 @@ class ViewerGL:
         self.valx=0
         self.mode = None
         self.demarrage= False 
+        self.BriqueVisible= 0 
         
     
     def run(self):
@@ -93,15 +92,6 @@ class ViewerGL:
                     self.update_camera(obj.program)
                 obj.draw()
 
-            # if(self.bool):
-            #      self.objs[25].transformation.translation -= \
-            #          pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[25].transformation.rotation_euler), pyrr.Vector3([0, 0, -1]))
-            #  self.bool=0
-
-            # if sqrt(pow(self.objs[25].transformation.rotation_euler[0] - self.objs[26].transformation.translation[0], 2) + pow(self.objs[25].transformation.rotation_euler[1] - self.objs[26].transformation.translation[1], 2) + pow(self.objs[25].transformation.rotation_euler[2] - self.objs[26].transformation.translation[2], 2)) < self.cible:
-            #     self.objs[26].visible = False
-
-
 
 
             # changement de buffer d'affichage pour éviter un effet de scintillement
@@ -113,17 +103,7 @@ class ViewerGL:
         # sortie du programme si appui sur la touche 'échappement'
         if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
             glfw.set_window_should_close(win, glfw.TRUE)
-        self.touch[key] = action
-
-
-
-        # if key == glfw.KEY_S and action == glfw.PRESS : 
-        #     self.coordXCible = pyrr.Vector4.from_vector3(self.cible_actuelle.transformation.translation, 1)[0]
-
-        #     print(self.coordXCible)
-        #     self.objs[2+len(self.ListeBriques)].transformation.translation -= \
-        #         pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[2+len(self.ListeBriques)].transformation.rotation_euler), pyrr.Vector3([self.coordXCible/4,-(-12.006*self.y_brut +3.0126)/4 , 0]))
-                                   
+        self.touch[key] = action           
         
        
         if key== glfw.KEY_Q and action == glfw.PRESS :
@@ -245,16 +225,6 @@ class ViewerGL:
             print("Pas de variable uniforme : projection")
         GL.glUniformMatrix4fv(loc, 1, GL.GL_FALSE, self.cam.projection)
 
-   # def update_key(self):
-      #    if glfw.KEY_UP in self.touch and self.touch[glfw.KEY_UP] > 0:
-        #     self.cam.transformation.rotation_euler[pyrr.euler.index().roll] -= 0.1
-        # if glfw.KEY_DOWN in self.touch and self.touch[glfw.KEY_DOWN] > 0:
-        #  AAAAAA   self.objs[0].transformation.translation -= \
-        # AAAAAAAAA    pyrr.matrix33.apply_to_vector(pyrr.matrix33.create_from_eulers(self.objs[0].transformation.rotation_euler), pyrr.Vector3([0, 0, 0.02]))
-        # if glfw.KEY_LEFT in self.touch and self.touch[glfw.KEY_LEFT] > 0:
-        #     self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] -= 0.1
-        # if glfw.KEY_RIGHT in self.touch and self.touch[glfw.KEY_RIGHT] > 0:
-        #     self.objs[0].transformation.rotation_euler[pyrr.euler.index().yaw] += 0.1
 
 
     def first_update(self):

@@ -78,17 +78,6 @@ def main():
     o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, Transformation3D())
     viewer.add_decors(o)
 
-    m = Mesh.load_obj('cube.obj')
-    m.normalize()
-    m.apply_matrix(pyrr.matrix44.create_from_scale([0.05, 0.05, 0.05, 1]))
-    tr = Transformation3D()
-    tr.translation.x = 0
-    tr.translation.y = 2
-    tr.translation.z = -9
-    texture = glutils.load_texture('wall.jpg')
-    o = Object3D(m.load_to_gpu(), m.get_nb_triangles(), program3d_id, texture, tr)
-    viewer.add_decors(o)
-
     m = Mesh()
     p0, p1, p2, p3 = [-15, 0, 5], [15, 0, 5], [15, 10, 5], [-15, 10, 5]
     n, c = [0, 1, 0], [1, 1, 1]
@@ -164,10 +153,6 @@ def main():
     viewer.add_textes(o)
     o= Text('0', np.array([ -0.8, 0.9], np.float32), np.array([-0.7,1],np.float32), vao, 2, programGUI_id, texture)
     viewer.add_textes(o)
-    print(len(viewer.textes))
-    print(len(viewer.decors))
-    print(len(viewer.objs))
-    print(len(viewer.textes + viewer.decors + viewer.objs))
 
     viewer.run()
     
